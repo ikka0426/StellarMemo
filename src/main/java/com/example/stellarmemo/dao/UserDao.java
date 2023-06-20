@@ -11,7 +11,7 @@ import  org.springframework.stereotype.Repository;
 public interface UserDao {
     int getUserNumberByAccount(@Param("account") String account);
 
-    User getBypassword(@Param("account") String account,
+    User getByPassword(@Param("account") String account,
                        @Param("password") String password);
 
     void createUser(User user);

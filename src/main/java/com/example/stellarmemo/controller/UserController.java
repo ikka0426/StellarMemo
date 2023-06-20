@@ -14,8 +14,18 @@ public class UserController {
   @Autowired private UserOP userOP;
 
   @RequestMapping("/login")
-  public WebResult login(@RequestBody HashMap<string, string> map) {
-    return
+  public WebResult login(@RequestBody HashMap<String, String> map) {
+    return userOP.userLogin(map.get("account"), map.get("password"));
+  }
+
+  @RequestMapping("/register")
+  public WebResult register(@RequestBody HashMap<String, String> map) {
+    return userOP.userRegister(map.get("account"), map.get("password"));
+  }
+
+  @RequestMapping("/changePassword")
+  public WebResult changePassword(@RequestBody HashMap<String, String> map) {
+    return userOP.changePassword(map.get("account"), map.get("password"));
   }
 
 }
