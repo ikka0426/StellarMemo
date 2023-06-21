@@ -52,7 +52,7 @@ public class UserOP {
       }
     } catch (Exception e) {
       webResult.error("访问数据出错");
-      System.out.println(webResult.getMessage());
+      System.out.println(e.getMessage());
     }
     return webResult;
   }

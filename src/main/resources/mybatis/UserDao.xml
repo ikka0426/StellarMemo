@@ -2,13 +2,14 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.example.stellarmemo.dao.UserDao">
 
-    <select id="getUserNumberByAccount" resultType="int">
+    <select id="getUserNumberByAccount" resultType="java.lang.Integer">
         select count(*) from user where account=#{account};
     </select>
 
-    <select id="getBypassword" resultType="User">
+    <select id="getByPassword" resultType="User">
         select * from user
         where account=#{account} and password=#{password};
     </select>
@@ -18,7 +19,6 @@
         insert into user(user_id,account,password,user_name)
             values (#{user_id},#{account},#{password},#{user_name})
     </insert>
-
 
 
     <update id="updatePassword" >
