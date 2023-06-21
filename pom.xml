@@ -43,6 +43,18 @@
 			<version>2.2.2</version>
 		</dependency>
 
+		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>5.8.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-miniapp</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -53,5 +65,6 @@
 			</plugin>
 		</plugins>
 	</build>
+
 
 </project>
