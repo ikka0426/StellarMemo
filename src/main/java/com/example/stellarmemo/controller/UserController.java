@@ -13,19 +13,30 @@ public class UserController {
 
   @Autowired private UserOP userOP;
 
+  @RequestMapping(value = "/test")
+  public String test() {
+    return "index";
+  }
+
   @RequestMapping("/login")
   public WebResult login(@RequestBody HashMap<String, String> map) {
-    return userOP.userLogin(map.get("account"), map.get("password"));
+    return userOP.userLogin(map.get("username"), map.get("password"));
   }
 
   @RequestMapping("/register")
   public WebResult register(@RequestBody HashMap<String, String> map) {
-    return userOP.userRegister(map.get("account"), map.get("password"));
+//    System.out.print(map);
+    return userOP.userRegister(map.get("username"), map.get("password"));
   }
 
   @RequestMapping("/changePassword")
   public WebResult changePassword(@RequestBody HashMap<String, String> map) {
-    return userOP.changePassword(map.get("account"), map.get("password"));
+    return userOP.changePassword(map.get("username"), map.get("password"));
   }
+
+//  @RequestMapping("/wxLogin")
+//  public WebResult wxLogin(@RequestBody String code) {
+//    return
+//  }
 
 }
