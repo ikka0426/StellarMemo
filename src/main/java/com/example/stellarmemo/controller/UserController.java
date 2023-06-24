@@ -20,13 +20,19 @@ public class UserController {
 
   @RequestMapping("/login")
   public WebResult login(@RequestBody HashMap<String, String> map) {
+//    System.out.print(map);
     return userOP.userLogin(map.get("username"), map.get("password"));
+  }
+
+  @RequestMapping("getCode")
+  public WebResult getCode(@RequestBody HashMap<String, String> map) {
+    return userOP.getCode(map.get("email"));
   }
 
   @RequestMapping("/register")
   public WebResult register(@RequestBody HashMap<String, String> map) {
 //    System.out.print(map);
-    return userOP.userRegister(map.get("username"), map.get("password"));
+    return userOP.userRegister(map.get("username"), map.get("password"), map.get("email"), map.get("code"));
   }
 
   @RequestMapping("/changePassword")

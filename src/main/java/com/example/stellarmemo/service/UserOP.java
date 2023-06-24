@@ -5,13 +5,24 @@ import com.example.stellarmemo.pojo.IDSet;
 import com.example.stellarmemo.pojo.User;
 import com.example.stellarmemo.pojo.WebResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 
 @Service
 public class UserOP {
 
   @Autowired UserDao userDao;
+  private MailSender mailSender;
+  private final RedisTemplate<String, String> redisTemplate;
+
+  @Autowired
+  public UserOP(RedisTemplate<String, String> redisTemplate, MailSender mailSender) {
+    this.redisTemplate = redisTemplate;
+    this.mailSender = mailSender;
+  }
 
   public WebResult userLogin(String account, String password) {
     WebResult webResult = new WebResult();
@@ -37,22 +48,44 @@ public class UserOP {
     return webResult;
   }
 
-  public WebResult userRegister(String account, String password) {
+  public WebResult getCode(String email) {
+    WebResult webResult = new WebResult();
+    try {
+      String code = mailSender.contextLoads(email);
+      redisTemplate.opsForValue().set(email, code, 10, TimeUnit.MINUTES);
+      webResult.success("邮件发送成功");
+      System.out.println(webResult.getMessage());
+    } catch (Exception e) {
+      webResult.error("获取验证码失败");
+      System.out.println(e.getMessage());
+    }
+    return webResult;
+  }
+
+  public WebResult userRegister(String account, String password, String email, String code) {
     WebResult webResult = new WebResult();
     try {
       int num = userDao.getUserNumberByAccount(account);
       if (num == 0) {
-        System.out.println("新帐号注册");
-        User user = new User(IDSet.getShortUuid(), account, password, account);
-        userDao.createUser(user);
-        webResult.success("注册成功");
+        String savedCode = redisTemplate.opsForValue().get(email);
+//        System.out.println(savedCode);
+//        System.out.println(code);
+        if (!savedCode.equals(code)) {
+          webResult.error("验证码错误");
+          System.out.println(webResult.getMessage());
+        } else {
+          System.out.println("新帐号注册");
+          User user = new User(IDSet.getShortUuid(), account, password, account);
+          userDao.createUser(user);
+          webResult.success("注册成功");
+        }
       } else {
         webResult.error("账号" + account + "已被注册");
         System.out.println(webResult.getMessage());
       }
     } catch (Exception e) {
       webResult.error("访问数据出错");
-      System.out.println(e.getMessage());
+      System.out.println(webResult.getMessage());
     }
     return webResult;
   }
