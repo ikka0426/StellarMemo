@@ -43,7 +43,7 @@ public class UserOP {
       int num = userDao.getUserNumberByAccount(account);
       if (num == 0) {
         System.out.println("新帐号注册");
-        User user = new User(IDSet.getShortUuid(), account, password, account);
+        User user = new User(IDSet.getShortUuid(), account, password, account, email);
         userDao.createUser(user);
         webResult.success("注册成功");
       } else {
@@ -52,7 +52,7 @@ public class UserOP {
       }
     } catch (Exception e) {
       webResult.error("访问数据出错");
-      System.out.println(webResult.getMessage());
+      System.out.println(e.getMessage());
     }
     return webResult;
   }
