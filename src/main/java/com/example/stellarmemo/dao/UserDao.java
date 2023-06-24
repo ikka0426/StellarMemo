@@ -18,6 +18,6 @@ public interface UserDao {
 
     void updatePassword(@Param("account") String account,
                         @Param("NewPassword") String NewPassword);
-    void configCount(@Param("OriginalPassword") String OriginalPassword,
-                     @Param("id") String id);
+//    void configCount(@Param("OriginalPassword") String OriginalPassword,
+//                     @Param("id") String id);
 }
