@@ -13,7 +13,7 @@ public class User {
 
     public User(){}
 
-    public User(String user_id, String account, String password, String user_name, String email){
+    public User(String user_id, String account, String password, String user_name){
         this.user_id = user_id;
         this.user_name = user_name;
         this.account = account;
