@@ -82,10 +82,8 @@ public class UserOP {
       Date date = new Date();
       SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
       String imageName = formatter.format(date);
-      System.out.println(imageName);
     try {
-      File target = new File("D:/IDEA/StellarMemo/src/main/resources/image/" + "imageName" + ".jpg");
-      System.out.println("src/main/resources/image/" + "b" + ".jpg");
+      File target = new File("D:/IDEA/StellarMemo/src/main/resources/image/" + imageName + ".jpg");
       if (!target.exists()) {
         target.createNewFile();
       }
