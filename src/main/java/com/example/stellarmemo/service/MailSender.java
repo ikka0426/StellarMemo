@@ -34,7 +34,7 @@ public class MailSender {
     }
     System.out.println("验证码：" + code);
     helper.setSubject("您的验证码为：" + code);
-    helper.setText("您好！您的验证码为：" + "<h2>" + code + "</h2>");
+    helper.setText("您好！您的验证码为：" + "<h2>" + code + "</h2>" + "验证码十分钟内有效。", true);
     helper.setTo(mailAddress);
     helper.setFrom("stellarmemo@qq.com");
     mailSender.send(mimeMessage);

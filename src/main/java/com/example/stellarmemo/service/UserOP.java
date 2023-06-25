@@ -1,5 +1,6 @@
 package com.example.stellarmemo.service;
 
+import cn.hutool.json.JSONUtil;
 import com.example.stellarmemo.dao.UserDao;
 import com.example.stellarmemo.pojo.IDSet;
 import com.example.stellarmemo.pojo.User;
@@ -8,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.TimeUnit;
 
 
@@ -15,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class UserOP {
 
   @Autowired UserDao userDao;
-  private MailSender mailSender;
+  private final MailSender mailSender;
   private final RedisTemplate<String, String> redisTemplate;
 
   @Autowired
@@ -24,8 +28,22 @@ public class UserOP {
     this.mailSender = mailSender;
   }
 
-  public WebResult userLogin(String account, String password) {
+  public WebResult userLogin(String account, String password, HttpServletRequest request, HttpServletResponse response) {
     WebResult webResult = new WebResult();
+    String userId = null;
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (Cookie cookie: cookies) {
+        if (cookie.getName().equalsIgnoreCase("userCookie")) {
+          userId = cookie.getValue();
+        }
+      }
+      if (userId != null) {
+        webResult.error("已登录" + userId);
+        System.out.println(webResult.getMessage());
+        return webResult;
+      }
+    }
     try {
       int num = userDao.getUserNumberByAccount(account);
       if (num == 0) {
@@ -38,6 +56,13 @@ public class UserOP {
           webResult.error("登陆失败");
         } else {
           webResult.success("登陆成功");
+          String userJson = JSONUtil.toJsonStr(user);
+          Cookie cookie = new Cookie("userCookie", user.getUser_id());
+          cookie.setMaxAge(7 * 24 * 60 * 60);
+          cookie.setPath("/");
+          response.addCookie(cookie);
+          redisTemplate.opsForValue().set("user/" + user.getUser_id(), userJson, 7, TimeUnit.DAYS);
+          webResult.setData(user);
         }
         System.out.println(account + webResult.getMessage());
       }
@@ -70,7 +95,7 @@ public class UserOP {
         String savedCode = redisTemplate.opsForValue().get(email);
 //        System.out.println(savedCode);
 //        System.out.println(code);
-        if (!savedCode.equals(code)) {
+        if (savedCode == null || !savedCode.equals(code)) {
           webResult.error("验证码错误");
           System.out.println(webResult.getMessage());
         } else {
@@ -98,6 +123,33 @@ public class UserOP {
     } catch (Exception e) {
       webResult.error("修改失败");
       System.out.println(webResult.getMessage());
+    }
+    return webResult;
+  }
+
+  public WebResult userLogout(HttpServletRequest request, HttpServletResponse response) {
+    WebResult webResult = new WebResult();
+    String userId = null;
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (Cookie cookie: cookies) {
+        if (cookie.getName().equalsIgnoreCase("userCookie")) {
+          userId = cookie.getValue();
+        }
+      }
+      if (userId != null) {
+        Cookie cookie = new Cookie("userCookie", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        redisTemplate.delete("user/" + userId);
+        webResult.success("已登出" + userId);
+        System.out.println(webResult.getMessage());
+      } else {
+        webResult.error("未登录");
+      }
+    } else {
+      webResult.error("未登录");
     }
     return webResult;
   }

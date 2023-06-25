@@ -5,6 +5,8 @@ import com.example.stellarmemo.service.UserOP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import  java.util.HashMap;
 
 @RestController
@@ -19,9 +21,9 @@ public class UserController {
   }
 
   @RequestMapping("/login")
-  public WebResult login(@RequestBody HashMap<String, String> map) {
+  public WebResult login(@RequestBody HashMap<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 //    System.out.print(map);
-    return userOP.userLogin(map.get("username"), map.get("password"));
+    return userOP.userLogin(map.get("username"), map.get("password"), request, response);
   }
 
   @RequestMapping("getCode")
@@ -38,6 +40,11 @@ public class UserController {
   @RequestMapping("/changePassword")
   public WebResult changePassword(@RequestBody HashMap<String, String> map) {
     return userOP.changePassword(map.get("username"), map.get("password"));
+  }
+
+  @RequestMapping("/logout")
+  public WebResult logout(HttpServletRequest request, HttpServletResponse response) {
+    return userOP.userLogout(request, response);
   }
 
 //  @RequestMapping("/wxLogin")
