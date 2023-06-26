@@ -1,12 +1,16 @@
 package com.example.stellarmemo.service;
 
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.example.stellarmemo.dao.UserDao;
 import com.example.stellarmemo.pojo.IDSet;
 import com.example.stellarmemo.pojo.User;
 import com.example.stellarmemo.pojo.WebResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -22,6 +26,8 @@ public class UserOP {
   private final MailSender mailSender;
   private final RedisTemplate<String, String> redisTemplate;
 
+  private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
   @Autowired
   public UserOP(RedisTemplate<String, String> redisTemplate, MailSender mailSender) {
     this.redisTemplate = redisTemplate;
@@ -30,6 +36,7 @@ public class UserOP {
 
   public WebResult userLogin(String account, String password, HttpServletRequest request, HttpServletResponse response) {
     WebResult webResult = new WebResult();
+    password = bCryptPasswordEncoder.encode(password);
     String userId = null;
     Cookie[] cookies = request.getCookies();
     if (cookies != null) {
@@ -99,6 +106,9 @@ public class UserOP {
           webResult.error("验证码错误");
           System.out.println(webResult.getMessage());
         } else {
+          redisTemplate.delete(email);
+          password = bCryptPasswordEncoder.encode(password);
+          System.out.println(password.length());
           System.out.println("新帐号注册");
           User user = new User(IDSet.getShortUuid(), account, password, account);
           userDao.createUser(user);
@@ -110,16 +120,24 @@ public class UserOP {
       }
     } catch (Exception e) {
       webResult.error("访问数据出错");
-      System.out.println(webResult.getMessage());
+      System.out.println(e.getMessage());
     }
     return webResult;
   }
 
-  public WebResult changePassword(String account, String password) {
+  public WebResult changePassword(String account, String password, String code, String email) {
     WebResult webResult = new WebResult();
     try {
-      userDao.updatePassword(account, password);
-      webResult.success("修改成功");
+      String savedCode = redisTemplate.opsForValue().get(email);
+      if (savedCode == null || !savedCode.equals(code)) {
+        webResult.error("验证码错误");
+        System.out.println(webResult.getMessage());
+      } else {
+        redisTemplate.delete(email);
+        password = bCryptPasswordEncoder.encode(password);
+        userDao.updatePassword(account, password);
+        webResult.success("修改成功");
+      }
     } catch (Exception e) {
       webResult.error("修改失败");
       System.out.println(webResult.getMessage());
@@ -151,6 +169,23 @@ public class UserOP {
     } else {
       webResult.error("未登录");
     }
+    return webResult;
+  }
+
+  @Value("${wx.appid}")
+  private String appId;
+
+  @Value("${wx.secret}")
+  private String secret;
+
+  public WebResult wxLogin(String code) {
+    WebResult webResult = new WebResult();
+    String authUrl = "https://api.weixin.qq.com/sns/jscode2session?grant_type=authorization_code";
+    authUrl = authUrl + "&appid=" + appId + "&secret=" + secret + "&js_code" + code;
+    String result = HttpUtil.get(authUrl);
+    JSONObject jsonObject = JSONUtil.parseObj(result);
+    String openId = jsonObject.getStr("openid");
+    webResult.setData(openId);
     return webResult;
   }
 

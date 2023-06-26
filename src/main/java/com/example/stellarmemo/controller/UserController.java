@@ -26,7 +26,7 @@ public class UserController {
     return userOP.userLogin(map.get("username"), map.get("password"), request, response);
   }
 
-  @RequestMapping("getCode")
+  @RequestMapping("/getCode")
   public WebResult getCode(@RequestBody HashMap<String, String> map) {
     return userOP.getCode(map.get("email"));
   }
@@ -39,7 +39,7 @@ public class UserController {
 
   @RequestMapping("/changePassword")
   public WebResult changePassword(@RequestBody HashMap<String, String> map) {
-    return userOP.changePassword(map.get("username"), map.get("password"));
+    return userOP.changePassword(map.get("username"), map.get("password"), map.get("code"), map.get("email"));
   }
 
   @RequestMapping("/logout")
@@ -47,9 +47,9 @@ public class UserController {
     return userOP.userLogout(request, response);
   }
 
-//  @RequestMapping("/wxLogin")
-//  public WebResult wxLogin(@RequestBody String code) {
-//    return
-//  }
+  @RequestMapping("/wxLogin")
+  public WebResult wxLogin(@RequestBody HashMap<String, String> map) {
+    return userOP.wxLogin(map.get("code"));
+  }
 
 }
