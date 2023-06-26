@@ -5,19 +5,19 @@
 <mapper namespace="com.example.stellarmemo.dao.NoteDao">
 
     <insert id="createNote">
-        insert into note(user_id,content,noteid)
-        values (#{user_id},#{content},#{noteid})
+        insert into note(user_id,content,note_id,imageSrc)
+        values (#{user_id},#{content},#{note_id},#{imageSrc})
     </insert>
 
     <update id="modifyNote" >
         update note set
         content=#{content}
-        where noteid=#{noteid}
+        where note_id=#{note_id}
     </update>
 
 
     <delete id="deleteNote" >
-        delete from note where noteid=#{noteid}
+        delete from note where note_id=#{note_id}
     </delete>
 
 

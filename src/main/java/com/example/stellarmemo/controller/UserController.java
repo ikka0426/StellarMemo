@@ -38,11 +38,4 @@ public class UserController {
 //  public WebResult wxLogin(@RequestBody String code) {
 //    return
 //  }
-
-  @RequestMapping("/submitNote")
-  public void submitNote(@RequestBody HashMap<String, String> map) {
-    System.out.println(map.get("imageSrc"));
-    userOP.submitNote(map.get("imageSrc"));
-  }
-
 }

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Note{//日常笔记
     @NonNull
-    private String noteid;//笔记标识id
+    private String note_id;//笔记标识id
     private String user_id;//所属用户
     private String content;//内容
     //private ArrayList<String> tag;//笔记tag

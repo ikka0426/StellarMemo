@@ -75,35 +75,4 @@ public class UserOP {
     }
     return webResult;
   }
-
-  public WebResult submitNote(String imageSrc) {
-
-    WebResult webResult = new WebResult();
-      Date date = new Date();
-      SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
-      String imageName = formatter.format(date);
-    try {
-      File target = new File("D:/IDEA/StellarMemo/src/main/resources/image/" + imageName + ".jpg");
-      if (!target.exists()) {
-        target.createNewFile();
-      }
-      File src = new File(imageSrc);
-
-      FileInputStream fis = new FileInputStream(src);
-      FileOutputStream fos = new FileOutputStream(target);
-
-      int len = 0;
-      byte[] data = new byte[20];
-      while ((len = fis.read(data)) != -1) {
-        fos.write(data, 0, len);
-      }
-
-      fis.close();
-      fos.close();
-    }catch (IOException e){
-      System.out.println("上传失败");
-      System.out.println(e.getMessage());
-    }
-    return webResult;
-  }
 }
