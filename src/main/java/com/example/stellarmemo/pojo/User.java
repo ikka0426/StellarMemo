@@ -9,6 +9,7 @@ public class User {
     private String password;
     private Date birth;
     private String gender;
+    private String email;
 
     public User(){}
 
