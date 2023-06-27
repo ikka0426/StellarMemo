@@ -181,8 +181,9 @@ public class UserOP {
   public WebResult wxLogin(String code) {
     WebResult webResult = new WebResult();
     String authUrl = "https://api.weixin.qq.com/sns/jscode2session?grant_type=authorization_code";
-    authUrl = authUrl + "&appid=" + appId + "&secret=" + secret + "&js_code" + code;
+    authUrl = authUrl + "&appid=" + appId + "&secret=" + secret + "&js_code=" + code;
     String result = HttpUtil.get(authUrl);
+    System.out.println(code);
     JSONObject jsonObject = JSONUtil.parseObj(result);
     String openId = jsonObject.getStr("openid");
     webResult.setData(openId);
