@@ -5,6 +5,7 @@ import com.example.stellarmemo.service.AdminOP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,12 +20,21 @@ public class AdminController {
 
   @RequestMapping("/login")
   public WebResult adminLogin(@RequestBody HashMap<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-    return adminOP.login(map.get("username"), map.get("password"), request, response);
+    return adminOP.login(map.get("account"), map.get("password"), request, response);
   }
 
   @RequestMapping("/register")
   public WebResult adminRegister(@RequestBody HashMap<String, String> map, HttpServletRequest request) {
-    return adminOP.register(map.get("username"), map.get("password"), request);
+    return adminOP.register(map.get("adminName"), map.get("password"), map.get("account"), request);
+  }
+
+  //获取管理员权限
+  @RequestMapping("/register")
+  public WebResult adminGetPermission(@RequestParam("account") String account,
+                                 @RequestParam("examine") int examine,
+                                 @RequestParam("delete") int delete,
+                                 HttpServletRequest request){
+    return adminOP.getPermission(account, examine, delete, request);
   }
 
 }

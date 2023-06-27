@@ -2,6 +2,9 @@ package com.example.stellarmemo.service;
 
 import cn.hutool.json.JSONUtil;
 import com.example.stellarmemo.dao.AdminDAO;
+import com.example.stellarmemo.pojo.Admin;
+import com.example.stellarmemo.pojo.IDSet;
+import com.example.stellarmemo.pojo.User;
 import com.example.stellarmemo.pojo.WebResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -70,4 +73,38 @@ public class AdminOP {
     return webResult;
   }
 
+  public WebResult register(String account, String password, String name,HttpServletRequest request) {
+    WebResult webResult = new WebResult();
+    try {
+      int num = adminDAO.getAdminNumberByAccount(account);
+      if (num == 0) {
+          System.out.println("新管理员注册");
+          Admin admin = new Admin(IDSet.getShortUuid(), name, account , password);
+          adminDAO.createAdmin(admin);
+          webResult.success("注册成功");
+      }
+      else {
+        webResult.error("管理员账号" + account + "已被注册");
+        System.out.println(webResult.getMessage());
+      }
+    } catch (Exception e) {
+      webResult.error("访问数据出错");
+      System.out.println(e.getMessage());
+    }
+    return webResult;
+  }
+
+  public WebResult getPermission(String account,int examine, int delete, HttpServletRequest request){
+    WebResult webResult = new WebResult();
+    try {
+      adminDAO.setPermission(account, examine, delete);
+      webResult.success("修改成功");
+    } catch (Exception e) {
+      webResult.error("增加权限失败");
+      System.out.println(e.getMessage());
+    }
+
+
+    return webResult;
+  }
 }
