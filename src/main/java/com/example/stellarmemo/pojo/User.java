@@ -13,11 +13,12 @@ public class User {
 
     public User(){}
 
-    public User(String user_id, String account, String password, String user_name){
+    public User(String user_id, String account, String password, String user_name, String email){
         this.user_id = user_id;
         this.user_name = user_name;
         this.account = account;
         this.password = password;
+        this.email = email;
     }
 
     public String getUser_id(){return user_id;}

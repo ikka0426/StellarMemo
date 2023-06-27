@@ -16,8 +16,8 @@
 
 
     <insert id="createUser" parameterType="User" >
-        insert into user(user_id,account,password,user_name)
-            values (#{user_id},#{account},#{password},#{user_name})
+        insert into user(user_id,account,password,user_name,email)
+            values (#{user_id},#{account},#{password},#{user_name},#{email})
     </insert>
 
 

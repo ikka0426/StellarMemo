@@ -26,7 +26,7 @@ public class UserController {
   @RequestMapping("/register")
   public WebResult register(@RequestBody HashMap<String, String> map) {
 //    System.out.print(map);
-    return userOP.userRegister(map.get("username"), map.get("password"));
+    return userOP.userRegister(map.get("username"), map.get("password"), map.get("email"));
   }
 
   @RequestMapping("/changePassword")
@@ -38,4 +38,5 @@ public class UserController {
 //  public WebResult wxLogin(@RequestBody String code) {
 //    return
 //  }
+
 }

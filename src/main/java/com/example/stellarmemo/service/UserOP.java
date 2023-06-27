@@ -44,13 +44,13 @@ public class UserOP {
     return webResult;
   }
 
-  public WebResult userRegister(String account, String password) {
+  public WebResult userRegister(String account, String password, String email) {
     WebResult webResult = new WebResult();
     try {
       int num = userDao.getUserNumberByAccount(account);
       if (num == 0) {
         System.out.println("新帐号注册");
-        User user = new User(IDSet.getShortUuid(), account, password, account);
+        User user = new User(IDSet.getShortUuid(), account, password, account, email);
         userDao.createUser(user);
         webResult.success("注册成功");
       } else {
