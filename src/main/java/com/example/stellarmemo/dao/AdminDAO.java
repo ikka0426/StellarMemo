@@ -21,4 +21,10 @@ public interface AdminDAO {
     void setPermission(@Param("account") String account,
                        @Param("examine") int examine,
                        @Param("delete") int delete);
+
+    int isPermittedExamine(@Param("account") String account,
+                           @Param("examine") int examine);
+
+    int isPermittedDelete(@Param("account") String account,
+                          @Param("delete") int delete);
 }

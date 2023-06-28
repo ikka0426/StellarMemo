@@ -29,4 +29,14 @@
         insert into permission(account,examine,delete)
         values (#{account},#{examine},#{delete})
     </update>
+
+    <select id="isPermittedExamine" resultType="java.lang.Integer">
+        select examine from permission
+        where account=#{account}
+    </select>
+
+    <select id="isPermittedDelete" resultType="java.lang.Integer">
+        select `delete` from permission
+        where account=#{account}
+    </select>
 </mapper>
