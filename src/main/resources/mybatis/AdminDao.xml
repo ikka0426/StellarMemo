@@ -39,4 +39,9 @@
         select `delete` from permission
         where account=#{account};
     </select>
+
+    <select id="isPermittedManageAdmin" resultType="java.lang.Integer">
+        select manage from permission
+        where account=#{account};
+    </select>
 </mapper>

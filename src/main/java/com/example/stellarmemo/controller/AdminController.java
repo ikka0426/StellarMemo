@@ -33,8 +33,9 @@ public class AdminController {
   public WebResult adminGetPermission(@RequestParam("account") String account,
                                  @RequestParam("examine") int examine,
                                  @RequestParam("delete") int delete,
+                                 @RequestParam("manageAdmin") int manageAdmin,
                                  HttpServletRequest request){
-    return adminOP.getPermission(account, examine, delete, request);
+    return adminOP.getPermission(account, examine, delete, manageAdmin,request);
   }
 
 }

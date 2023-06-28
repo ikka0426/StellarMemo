@@ -94,10 +94,10 @@ public class AdminOP {
     return webResult;
   }
 
-  public WebResult getPermission(String account,int examine, int delete, HttpServletRequest request){
+  public WebResult getPermission(String account,int examine, int delete, int manageAdmin, HttpServletRequest request){
     WebResult webResult = new WebResult();
     try {
-      adminDAO.setPermission(account, examine, delete);
+      adminDAO.setPermission(account, examine, delete, manageAdmin);
       webResult.success("修改成功");
     } catch (Exception e) {
       webResult.error("增加权限失败");

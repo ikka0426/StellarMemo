@@ -20,11 +20,12 @@ public interface AdminDAO {
 
     void setPermission(@Param("account") String account,
                        @Param("examine") int examine,
-                       @Param("delete") int delete);
+                       @Param("delete") int delete,
+                       @Param("manageAdmin") int manageAdmin);
 
-    int isPermittedExamine(@Param("account") String account,
-                           @Param("examine") int examine);
+    int isPermittedExamine(@Param("account") String account);
 
-    int isPermittedDelete(@Param("account") String account,
-                          @Param("delete") int delete);
+    int isPermittedDelete(@Param("account") String account);
+
+    int isPermittedManageAdmin(@Param("account") String account);
 }
