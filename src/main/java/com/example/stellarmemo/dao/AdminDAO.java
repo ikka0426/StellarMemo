@@ -13,19 +13,23 @@ public interface AdminDAO {
     Admin getByPassword(@Param("account") String account,
                        @Param("password") String password);
 
+    Admin getByAccount(@Param("account") String account);
+
+    String getPasswordByAccount(@Param("account") String account);
+
     void createAdmin(Admin admin);
 
     void updatePassword(@Param("account") String account,
                         @Param("NewPassword") String NewPassword);
 
     void setPermission(@Param("account") String account,
-                       @Param("examine") int examine,
-                       @Param("delete") int delete,
-                       @Param("manageAdmin") int manageAdmin);
+                       @Param("examine") String examine,
+                       @Param("delete") String delete,
+                       @Param("manage") String manage);
 
-    int isPermittedExamine(@Param("account") String account);
+    String isPermittedExamine(@Param("account") String account);
 
-    int isPermittedDelete(@Param("account") String account);
+    String isPermittedDelete(@Param("account") String account);
 
-    int isPermittedManageAdmin(@Param("account") String account);
+    String isPermittedManage(@Param("account") String account);
 }

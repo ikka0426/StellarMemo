@@ -14,6 +14,16 @@
         where account=#{account} and password=#{password};
     </select>
 
+    <select id="getByAccount" resultType="Admin">
+        select * from admin
+        where account=#{account};
+    </select>
+
+    <select id="getPasswordByAccount" resultType="String">
+        select password from admin
+        where account=#{account};
+    </select>
+
 
     <insert id="createAdmin" parameterType="Admin" >
         insert into admin(adminID,adminName,account,password)
@@ -26,22 +36,22 @@
     </update>
 
     <update id="setPermission">
-        insert into permission(account,examine,delete)
-        values (#{account},#{examine},#{delete})
+        insert into permission(account,examine,`delete`,manage)
+        values (#{account},#{examine},#{delete},#{manage})
     </update>
 
-    <select id="isPermittedExamine" resultType="java.lang.Integer">
+    <select id="isPermittedExamine" resultType="String">
         select examine from permission
         where account=#{account};
     </select>
 
-    <select id="isPermittedDelete" resultType="java.lang.Integer">
+    <select id="isPermittedDelete" resultType="String">
         select `delete` from permission
         where account=#{account};
     </select>
 
-    <select id="isPermittedManageAdmin" resultType="java.lang.Integer">
-        select manageAdmin from permission
+    <select id="isPermittedManage" resultType="String">
+        select manage from permission
         where account=#{account};
     </select>
 </mapper>

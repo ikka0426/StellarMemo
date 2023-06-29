@@ -1,5 +1,6 @@
 package com.example.stellarmemo.service;
 
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.example.stellarmemo.dao.AdminDAO;
 import com.example.stellarmemo.pojo.Admin;
@@ -30,9 +31,7 @@ public class AdminOP {
     this.redisTemplate = redisTemplate;
   }
 
-  public WebResult login(String account, String password, HttpServletRequest request, HttpServletResponse response) {
-    WebResult webResult = new WebResult();
-    password = bCryptPasswordEncoder.encode(password);
+  private String isLogin(HttpServletRequest request) {
     String adminId = null;
     Cookie[] cookies = request.getCookies();
     if (cookies != null) {
@@ -41,29 +40,40 @@ public class AdminOP {
           adminId = cookie.getValue();
         }
       }
-      if (adminId != null) {
-        webResult.error("已登录管理员：" + adminId);
-        return webResult;
-      }
+    }
+    return adminId;
+  }
+
+  public WebResult login(String account, String password, HttpServletRequest request, HttpServletResponse response) {
+    WebResult webResult = new WebResult();
+    String adminId = isLogin(request);
+    if (adminId != null) {
+      webResult.error("已登录");
+      return webResult;
     }
     try {
       int num = adminDAO.getAdminNumberByAccount(account);
       if (num == 0) {
         webResult.error("管理员不存在");
         webResult.setCode(-2);
+        System.out.println(webResult.getMessage());
       } else {
-        Admin admin = adminDAO.getByPassword(account, password);
-        if (admin == null) {
-          webResult.error("管理员密码错误");
-        } else {
+        String savedPassword = adminDAO.getPasswordByAccount(account);
+        if (bCryptPasswordEncoder.matches(password, savedPassword)) {
+          Admin admin = adminDAO.getByAccount(account);
           Cookie cookie = new Cookie("adminCookie", admin.getAdminID());
           cookie.setMaxAge(24 * 60 * 60);
           cookie.setPath("/");
           response.addCookie(cookie);
           String adminJson = JSONUtil.toJsonStr(admin);
+          System.out.println(adminJson);
           redisTemplate.opsForValue().set("admin/" + admin.getAdminID(), adminJson, 1, TimeUnit.DAYS);
           webResult.setData(admin);
           webResult.success("管理员登陆成功");
+          System.out.println(webResult.getMessage());
+        } else {
+          webResult.error("管理员密码错误");
+          System.out.println(webResult.getMessage());
         }
       }
     } catch (Exception e) {
@@ -73,38 +83,85 @@ public class AdminOP {
     return webResult;
   }
 
-  public WebResult register(String account, String password, String name,HttpServletRequest request) {
+  public WebResult register(String account, String password, String name, HttpServletRequest request) {
     WebResult webResult = new WebResult();
-    try {
-      int num = adminDAO.getAdminNumberByAccount(account);
-      if (num == 0) {
+    password = bCryptPasswordEncoder.encode(password);
+    String adminId = isLogin(request);
+    if (adminId == null) {
+      webResult.error("未登录");
+      return webResult;
+    }
+    String adminAccount = JSONUtil.parseObj(redisTemplate.opsForValue().get("admin/" + adminId)).getStr("account");
+    if ("1".equals(adminDAO.isPermittedManage(adminAccount))) {
+      try {
+        int num = adminDAO.getAdminNumberByAccount(account);
+        if (num == 0) {
           System.out.println("新管理员注册");
-          Admin admin = new Admin(IDSet.getShortUuid(), name, account , password);
+          Admin admin = new Admin(IDSet.getShortUuid(), name, account, password);
           adminDAO.createAdmin(admin);
           webResult.success("注册成功");
+        }
+        else {
+          webResult.error("管理员账号" + account + "已被注册");
+          System.out.println(webResult.getMessage());
+        }
+      } catch (Exception e) {
+        webResult.error("访问数据出错");
+        System.out.println(e.getMessage());
       }
-      else {
-        webResult.error("管理员账号" + account + "已被注册");
-        System.out.println(webResult.getMessage());
-      }
-    } catch (Exception e) {
-      webResult.error("访问数据出错");
-      System.out.println(e.getMessage());
+    } else {
+      webResult.error("无权限");
     }
     return webResult;
   }
 
-  public WebResult getPermission(String account,int examine, int delete, int manageAdmin, HttpServletRequest request){
+  public WebResult setPermission(String account, String examine, String delete, String manage, HttpServletRequest request){
     WebResult webResult = new WebResult();
-    try {
-      adminDAO.setPermission(account, examine, delete, manageAdmin);
-      webResult.success("修改成功");
-    } catch (Exception e) {
-      webResult.error("增加权限失败");
-      System.out.println(e.getMessage());
+    String adminId = isLogin(request);
+    if (adminId == null) {
+      webResult.error("未登录");
+      return webResult;
     }
-
-
+    String adminAccount = JSONUtil.parseObj(redisTemplate.opsForValue().get("admin/" + adminId)).getStr("account");
+    if ("1".equals(adminDAO.isPermittedManage(adminAccount))) {
+      try {
+        adminDAO.setPermission(account, examine, delete, manage);
+        webResult.success("修改成功");
+      } catch (Exception e) {
+        webResult.error("增加权限失败");
+        System.out.println(e.getMessage());
+      }
+    } else {
+      webResult.error("无权限");
+    }
     return webResult;
   }
+
+  public WebResult logout(HttpServletRequest request, HttpServletResponse response) {
+    WebResult webResult = new WebResult();
+    String adminId = null;
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (Cookie cookie: cookies) {
+        if (cookie.getName().equalsIgnoreCase("adminCookie")) {
+          adminId = cookie.getValue();
+        }
+      }
+      if (adminId != null) {
+        Cookie cookie = new Cookie("adminCookie", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        redisTemplate.delete("admin/" + adminId);
+        webResult.success("已登出管理员" + adminId);
+      } else {
+        webResult.error("未登录");
+      }
+    } else {
+      webResult.error("未登录");
+    }
+    System.out.println(webResult.getMessage());
+    return webResult;
+  }
+
 }
