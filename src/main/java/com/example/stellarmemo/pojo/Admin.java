@@ -17,4 +17,11 @@ public class Admin {
     public String getAdminID(){
         return adminID;
     }
+
+    public String getAdminName() { return adminName; }
+
+    public String getAccount() { return account; }
+
+    public String getPassword() { return password; }
+
 }
