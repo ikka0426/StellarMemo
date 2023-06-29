@@ -29,7 +29,7 @@ public class AdminController {
   }
 
   //获取管理员权限
-  @RequestMapping("/register")
+  @RequestMapping("/sb")
   public WebResult adminGetPermission(@RequestParam("account") String account,
                                  @RequestParam("examine") int examine,
                                  @RequestParam("delete") int delete,

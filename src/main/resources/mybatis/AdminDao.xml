@@ -41,7 +41,7 @@
     </select>
 
     <select id="isPermittedManageAdmin" resultType="java.lang.Integer">
-        select manage from permission
+        select manageAdmin from permission
         where account=#{account};
     </select>
 </mapper>

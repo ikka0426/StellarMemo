@@ -10,8 +10,7 @@ import  org.apache.ibatis.annotations.Param;
 public interface NoteDao {
     public void createNote(@Param("user_id")String user_id,
                            @Param("content") String content,
-                           @Param("note_id") String note_id,
-                           @Param("imageSrc") String imageSrc);//创建笔记
+                           @Param("note_id") String note_id);//创建笔记
 
     public void modifyNote(@Param("note_id") String note_id,
                            @Param("content") String content);//修改笔记

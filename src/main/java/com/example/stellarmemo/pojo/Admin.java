@@ -17,4 +17,15 @@ public class Admin {
     public String getAdminID(){
         return adminID;
     }
+    public void setAdminID() { this.adminID = adminID; }
+
+    public String getAdminName() { return adminName; }
+    public void setAdminName() { this.adminName = adminName; }
+
+    public String getAccount() { return account; }
+    public void setAccount() { this.account = account; }
+
+    public String getPassword() { return password; }
+    public void setPassword() { this.password = password; }
+
 }
