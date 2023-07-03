@@ -5,8 +5,8 @@
 <mapper namespace="com.example.stellarmemo.dao.NoteDao">
 
     <insert id="createNote">
-        insert into note(user_id,content,note_id,state)
-        values (#{user_id},#{content},#{note_id},#{state})
+        insert into note(user_id,content,note_id,state,time)
+        values (#{user_id},#{content},#{note_id},#{state},#{time})
     </insert>
 
     <update id="modifyNote" >
@@ -30,6 +30,11 @@
 
     <select id="searchNoteByPage" resultType="Note">
         select * from note
-        limit #{pagesize} offset #{offset};
+        limit #{pageSize} offset #{offset};
+    </select>
+
+    <select id="searchNoteByID" resultType="Note">
+        select * from note
+        where note_id=#{note_id};
     </select>
 </mapper>
