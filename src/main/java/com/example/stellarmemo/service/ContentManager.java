@@ -5,22 +5,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ContentManager {
+    //提取表达式中的图片的路径
     public static String[] extractImageUrls(String htmlString) {
         Pattern pattern = Pattern.compile("<img\\s+src=['\"]([^'\"]+)['\"][^>]*>");
         Matcher matcher = pattern.matcher(htmlString);
-        
-        int count = matcher.groupCount();
-        String[] imageUrls = new String[count + 1];
+        Matcher matcher2 = pattern.matcher(htmlString);
+
+        int count = 0;
+        while (matcher.find()) count++;
+        String[] imageUrls = new String[count];
 
         int i = 0;
-        while (matcher.find()) {
-            imageUrls[i] = matcher.group(1);
+        while (matcher2.find()) {
+            imageUrls[i] = matcher2.group(1);
             i++;
         }
         return imageUrls;
     }
 
-    public static int nameCount;
+    public static int nameCount = countImage();
     private static void copyAndRenameImages(String[] imageUrls) {
         for (int i = 0; i < imageUrls.length; i++) {
             String imageUrl = imageUrls[i];
@@ -42,19 +45,51 @@ public class ContentManager {
         }
     }
 
+    //将html中的url替换成新的
     private static String replaceImageUrls(String htmlString, String[] imageUrls) {
         for (int i = 0; i < imageUrls.length; i++) {
             String imageUrl = imageUrls[i];
-            String imageName = "image" + (nameCount + i + 1) + ".jpg";
+            String imageName = "image" + (nameCount + 1) + ".jpg";
 
             nameCount++;
 
             htmlString = htmlString.replace(imageUrl, System.getProperty("user.dir") + "/src/main/resources/image/" + imageName);
+            htmlString = htmlString.replaceAll("\\\\", "/");
         }
         return htmlString;
     }
 
-    public static void main(String[] args) {
-        String htmlString = "<html><body><img src= \"D:/image1.jpg\"></body></html>";
+    //数image文件夹中已存放的图片数
+    private static int countImage() {
+        File folder = new File(System.getProperty("user.dir") + "/src/main/resources/image");
+        File[] list = folder.listFiles();
+        int count = 0;
+        for(File file : list) {
+            if (file.isFile()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static String modifiedContent(String htmlString) {
+
+        String[] imageUrls = extractImageUrls(htmlString);
+
+        copyAndRenameImages(imageUrls);
+
+        String modifiedHtmlString = replaceImageUrls(htmlString, imageUrls);
+
+        System.out.println(modifiedHtmlString);
+
+        return modifiedHtmlString;
+    }
+
+
+    //去掉HTML标签，并将图片部分替换为“[图片]”
+    public static String stripHtmlTags(String content) {
+        String text = content.replaceAll("<img[^>]*>", "[图片]");
+        text = text.replaceAll("<[^>]*>", "");
+        return text;
     }
 }

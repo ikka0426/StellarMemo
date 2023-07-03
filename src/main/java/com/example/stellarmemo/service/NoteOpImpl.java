@@ -7,11 +7,9 @@ import com.example.stellarmemo.pojo.WebResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 public class NoteOpImpl implements NoteOp{
@@ -21,35 +19,13 @@ public class NoteOpImpl implements NoteOp{
         super();
     }
 
-    //没有上传图片
     @Override
-    public WebResult createNote(String user_id,String content,String note_id, String imageSrc) {
+    public WebResult createNote(String user_id,String content,String note_id,String state) {
         WebResult webResult=new WebResult<>();
         try {
-            if(!imageSrc.equals("null")){
-                Date date = new Date();
-                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
-                String imageName = formatter.format(date);
-                File target = new File("D:/IDEA/StellarMemo/src/main/resources/image/" + imageName + ".jpg");
-                if (!target.exists()) {
-                        target.createNewFile();
-                }
-                File src = new File(imageSrc);
-
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(target);
-
-                int len = 0;
-                byte[] data = new byte[20];
-                while ((len = fis.read(data)) != -1) {
-                    fos.write(data, 0, len);
-                }
-
-                fis.close();
-                fos.close();
-            }
+            String modifiedContent = ContentManager.modifiedContent(content);
             note_id= IDSet.getShortUuid();
-            noteDao.createNote(user_id,content,note_id, imageSrc);
+            noteDao.createNote(user_id,modifiedContent,note_id,state);
             webResult.success("创建笔记成功");
 
         }catch (Exception e){
@@ -83,6 +59,54 @@ public class NoteOpImpl implements NoteOp{
 
         }catch (Exception e){
             webResult.error("删除笔记错误");
+            System.out.println(webResult.getMessage());
+        }
+        return webResult;
+    }
+
+    @Override
+    public WebResult searchAllNote() {
+        WebResult webResult = new WebResult();
+        try {
+            webResult.setData(noteDao.searchAllNote());
+            webResult.success("查询成功");
+            System.out.println("查询成功");
+        } catch (Exception e) {
+            webResult.error("查询笔记出错");
+            System.out.println(webResult.getMessage());
+        }
+        return webResult;
+    }
+
+    @Override
+    public WebResult countNote() {
+        WebResult webResult = new WebResult();
+        try {
+            webResult.setData(noteDao.countNote());
+            webResult.success("查询笔记数成功");
+            System.out.println("查询笔记数成功");
+        } catch (Exception e) {
+            webResult.error("查询笔记数出错");
+            System.out.println(webResult.getMessage());
+        }
+        return webResult;
+    }
+
+    @Override
+    public WebResult searchNoteByPage(int pagesize, int offset) {
+        WebResult webResult = new WebResult();
+        try {
+            List<Note> notes = noteDao.searchNoteByPage(pagesize, offset);
+
+            for(Note note : notes) {
+                note.setContent(ContentManager.stripHtmlTags(note.getContent()));
+            }
+
+            webResult.setData(notes);
+            webResult.success("查询成功");
+            System.out.println("查询成功");
+        } catch (Exception e) {
+            webResult.error("查询笔记出错");
             System.out.println(webResult.getMessage());
         }
         return webResult;
