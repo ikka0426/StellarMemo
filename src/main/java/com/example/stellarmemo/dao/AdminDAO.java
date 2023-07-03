@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface AdminDAO {
@@ -19,17 +21,25 @@ public interface AdminDAO {
 
     void createAdmin(Admin admin);
 
+    void deleteAdmin(@Param("account") String account);
+
     void updatePassword(@Param("account") String account,
                         @Param("NewPassword") String NewPassword);
 
     void setPermission(@Param("account") String account,
-                       @Param("examine") int examine,
-                       @Param("delete") int delete,
-                       @Param("manageAdmin") int manageAdmin);
+                       @Param("examine") String examine,
+                       @Param("delete") String delete,
+                       @Param("manage") String manageAdmin);
 
-    int isPermittedExamine(@Param("account") String account);
+    String isPermittedExamine(@Param("account") String account);
 
-    int isPermittedDelete(@Param("account") String account);
+    String isPermittedDelete(@Param("account") String account);
 
     String isPermittedManageAdmin(@Param("account") String account);
+
+    List<Admin> getAdminData(@Param("offset") int offset,
+                            @Param("pageSize") int pageSize);
+
+    int getAdminNum();
+
 }

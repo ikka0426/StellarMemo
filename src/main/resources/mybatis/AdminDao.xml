@@ -30,22 +30,29 @@
         values (#{adminID},#{adminName},#{account},#{password})
     </insert>
 
+    <delete id="deleteAdmin" >
+        delete from admin where account=#{account};
+    </delete>
 
     <update id="updatePassword" >
-        update admin set password=#{NewPassword} where account=#{account}
+        update admin set password=#{NewPassword} where account=#{account};
     </update>
 
     <update id="setPermission">
         insert into permission(account,examine,`delete`,manage)
-        values (#{account},#{examine},#{delete},#{manageAdmin})
+        values (#{account},#{examine},#{delete},#{manage})
+        on duplicate key update
+            examine = values(examine),
+            `delete` = values(`delete`),
+            manage = values(manage);
     </update>
 
-    <select id="isPermittedExamine" resultType="java.lang.Integer">
+    <select id="isPermittedExamine" resultType="String">
         select examine from permission
         where account=#{account};
     </select>
 
-    <select id="isPermittedDelete" resultType="java.lang.Integer">
+    <select id="isPermittedDelete" resultType="String">
         select `delete` from permission
         where account=#{account};
     </select>
@@ -53,5 +60,14 @@
     <select id="isPermittedManageAdmin" resultType="String">
         select manage from permission
         where account=#{account};
+    </select>
+
+    <select id="getAdminData" resultType="Admin">
+        select * from admin
+        limit #{pageSize} offset #{offset};
+    </select>
+
+    <select id="getAdminNum" resultType="java.lang.Integer">
+        select count(*) from admin;
     </select>
 </mapper>
