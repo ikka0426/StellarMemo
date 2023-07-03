@@ -30,6 +30,6 @@
 
     <select id="searchNoteByPage" resultType="Note">
         select * from note
-        limit #{pagesize},#{offset};
+        limit #{pagesize} offset #{offset};
     </select>
 </mapper>

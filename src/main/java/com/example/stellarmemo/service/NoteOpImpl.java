@@ -7,6 +7,9 @@ import com.example.stellarmemo.pojo.WebResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 public class NoteOpImpl implements NoteOp{
@@ -93,7 +96,13 @@ public class NoteOpImpl implements NoteOp{
     public WebResult searchNoteByPage(int pagesize, int offset) {
         WebResult webResult = new WebResult();
         try {
-            webResult.setData(noteDao.searchNoteByPage(pagesize, offset));
+            List<Note> notes = noteDao.searchNoteByPage(pagesize, offset);
+
+            for(Note note : notes) {
+                note.setContent(ContentManager.stripHtmlTags(note.getContent()));
+            }
+
+            webResult.setData(notes);
             webResult.success("查询成功");
             System.out.println("查询成功");
         } catch (Exception e) {
