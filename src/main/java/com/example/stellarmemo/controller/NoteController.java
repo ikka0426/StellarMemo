@@ -32,14 +32,20 @@ public class NoteController {
         return noteOpImpl.searchAllNote();
     }
 
-    @RequestMapping(value = "count")
+    @RequestMapping(value = "/count")
     public WebResult countNote() {
         return noteOpImpl.countNote();
     }
 
     //返回笔记（分页）
-    @RequestMapping(value = "searchByPage")
+    @RequestMapping(value = "/searchByPage")
     public WebResult searchNoteByPage(@RequestBody HashMap<String, Integer> map) {
-        return noteOpImpl.searchNoteByPage(map.get("pagesize"), map.get("offset"));
+        return noteOpImpl.searchNoteByPage(map.get("pageSize"), map.get("offset"));
+    }
+
+    //根据note_id查询单个note内容
+    @RequestMapping(value = "/searchByID")
+    public WebResult SearchNoteByID(@RequestBody HashMap<String, String> map) {
+        return noteOpImpl.searchNoteByID(map.get("note_id"));
     }
 }

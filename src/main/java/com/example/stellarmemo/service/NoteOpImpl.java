@@ -25,7 +25,8 @@ public class NoteOpImpl implements NoteOp{
         try {
             String modifiedContent = ContentManager.modifiedContent(content);
             note_id= IDSet.getShortUuid();
-            noteDao.createNote(user_id,modifiedContent,note_id,state);
+            String time = Timer.getInstanceTime();
+            noteDao.createNote(user_id,modifiedContent,note_id,state,time);
             webResult.success("创建笔记成功");
 
         }catch (Exception e){
@@ -93,16 +94,30 @@ public class NoteOpImpl implements NoteOp{
     }
 
     @Override
-    public WebResult searchNoteByPage(int pagesize, int offset) {
+    public WebResult searchNoteByPage(int pageSize, int offset) {
         WebResult webResult = new WebResult();
         try {
-            List<Note> notes = noteDao.searchNoteByPage(pagesize, offset);
+            List<Note> notes = noteDao.searchNoteByPage(pageSize, offset);
 
             for(Note note : notes) {
                 note.setContent(ContentManager.stripHtmlTags(note.getContent()));
             }
 
             webResult.setData(notes);
+            webResult.success("查询成功");
+            System.out.println("查询成功");
+        } catch (Exception e) {
+            webResult.error("查询笔记出错");
+            System.out.println(webResult.getMessage());
+        }
+        return webResult;
+    }
+
+    @Override
+    public WebResult searchNoteByID(String note_id) {
+        WebResult webResult = new WebResult();
+        try {
+            webResult.setData(noteDao.searchNoteByID(note_id));
             webResult.success("查询成功");
             System.out.println("查询成功");
         } catch (Exception e) {

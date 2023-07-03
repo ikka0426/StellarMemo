@@ -15,7 +15,8 @@ public interface NoteDao {
     public void createNote(@Param("user_id")String user_id,
                            @Param("content") String content,
                            @Param("note_id") String note_id,
-                           @Param("state") String state);//创建笔记
+                           @Param("state") String state,
+                           @Param("time") String time);//创建笔记
 
     public void modifyNote(@Param("note_id") String note_id,
                            @Param("content") String content);//修改笔记
@@ -26,6 +27,8 @@ public interface NoteDao {
 
     int countNote();
 
-    List<Note> searchNoteByPage(@Param("pagesize") int pagesize,
+    List<Note> searchNoteByPage(@Param("pageSize") int pageSize,
                                 @Param("offset") int offset);
+
+    Note searchNoteByID(@Param("note_id") String note_id);
 }

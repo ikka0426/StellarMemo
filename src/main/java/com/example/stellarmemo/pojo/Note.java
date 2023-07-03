@@ -1,4 +1,5 @@
 package com.example.stellarmemo.pojo;
+import com.example.stellarmemo.service.Timer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,16 +18,18 @@ public class Note{//日常笔记
     private String user_id;//所属用户
     private String content;//内容
     private String state;
+    private String time;
     //private ArrayList<String> tag;//笔记tag
     //private int like;//点赞数
     //private ArrayList<String> comments;//评论
 
 
-    public Note(@NonNull String note_id, String user_id, String content, String state) {
+    public Note(@NonNull String note_id, String user_id, String content, String state, String time) {
         this.note_id = note_id;
         this.user_id = user_id;
         this.content = content;
         this.state = state;
+        this.time = time;
     }
 
     @NonNull
@@ -61,4 +64,6 @@ public class Note{//日常笔记
     public void setState(String state) {
         this.state = state;
     }
+
+    public String getTime() {return time;}
 }

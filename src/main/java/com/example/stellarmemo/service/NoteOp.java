@@ -9,5 +9,6 @@ public interface NoteOp {
     public WebResult deleteNote(String note_id);
     public WebResult searchAllNote();
     public WebResult countNote();
-    public WebResult searchNoteByPage(int pagesize, int offset);
+    public WebResult searchNoteByPage(int pageSize, int offset);
+    public WebResult searchNoteByID(String note_id);
 }
