@@ -110,10 +110,10 @@ public class NoteOpImpl implements NoteOp{
     }
 
     @Override
-    public WebResult searchNoteByPage(int pageSize, int offset) {
+    public WebResult searchNoteByPage(int pagesize, int offset) {
         WebResult webResult = new WebResult();
         try {
-            List<Note> notes = noteDao.searchNoteByPage(pageSize, offset);
+            List<Note> notes = noteDao.searchNoteByPage(pagesize, offset);
 
             for(Note note : notes) {
                 note.setContent(ContentManager.stripHtmlTags(note.getContent()));

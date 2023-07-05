@@ -16,6 +16,16 @@ public class AdminController {
 
   @Autowired private AdminOP adminOP;
 
+  @RequestMapping("/checkLoginStatus")
+  public WebResult checkLoginStatus(HttpServletRequest request) {
+    return adminOP.checkLoginStatus(request);
+  }
+
+  @RequestMapping("/getAccount")
+  public WebResult getAccount(HttpServletRequest request) {
+    return adminOP.getAccount(request);
+  }
+
   @RequestMapping("/login")
   public WebResult adminLogin(@RequestBody HashMap<String, String> map, HttpServletRequest request, HttpServletResponse response) {
     return adminOP.login(map.get("account"), map.get("password"), request, response);
@@ -31,14 +41,40 @@ public class AdminController {
     return adminOP.register(map.get("account"), map.get("password"), map.get("adminName"), request);
   }
 
+  @RequestMapping("/deleteAdmin")
+  public WebResult deleteAdmin(@RequestParam("account") String account, HttpServletRequest request) {
+    return adminOP.deleteAdmin(account, request);
+  }
 
+  //获取管理员权限
   @RequestMapping("/setPermission")
   public WebResult adminSetPermission(@RequestParam("account") String account,
-                                      @RequestParam("examine") String examine,
-                                      @RequestParam("delete") String delete,
-                                      @RequestParam("manage") String manage,
-                                      HttpServletRequest request) {
+                                 @RequestParam("examine") String examine,
+                                 @RequestParam("delete") String delete,
+                                 @RequestParam("manage") String manage,
+                                 HttpServletRequest request) {
     return adminOP.setPermission(account, examine, delete, manage, request);
+  }
+
+  @RequestMapping("/isPermittedManage")
+  public WebResult isPermittedManage(HttpServletRequest request) {
+    return adminOP.isPermittedManage(request);
+  }
+
+  @RequestMapping("/getSetupTime")
+  public WebResult getSetupTime() {
+    return adminOP.getSetupTime();
+  }
+
+  @RequestMapping("/getAdminData")
+  public WebResult getAdminData(@RequestParam("offset") int offset,
+                                @RequestParam("pageSize") int pageSize) {
+    return adminOP.getAdminData(offset, pageSize);
+  }
+
+  @RequestMapping("/getAdminNum")
+  public WebResult getAdminNum() {
+    return adminOP.getAdminNum();
   }
 
 }

@@ -5,6 +5,15 @@
 
 <mapper namespace="com.example.stellarmemo.dao.UserDao">
 
+    <select id="getUserNum" resultType="java.lang.Integer">
+        select count(*) from user;
+    </select>
+
+    <select id="getUserData" resultType="User">
+        select * from user
+        limit #{pageSize} offset #{offset};
+    </select>
+
     <select id="getUserNumberByAccount" resultType="java.lang.Integer">
         select count(*) from user where account=#{account};
     </select>
@@ -24,4 +33,9 @@
     <update id="updatePassword" >
         update user set password=#{NewPassword} where account=#{account}
     </update>
+
+    <delete id="deleteUser" >
+        delete from user where account=#{account};
+    </delete>
+
 </mapper>

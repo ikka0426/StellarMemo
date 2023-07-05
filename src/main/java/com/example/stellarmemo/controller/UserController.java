@@ -48,8 +48,24 @@ public class UserController {
   }
 
   @RequestMapping("/wxLogin")
-  public WebResult wxLogin(@RequestBody HashMap<String, String> map) {
-    return userOP.wxLogin(map.get("code"));
+  public WebResult wxLogin(@RequestBody HashMap<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+    return userOP.wxLogin(map.get("code"), request, response);
+  }
+
+  @RequestMapping("/getUserNum")
+  public WebResult getUserNum() {
+    return userOP.getUserNum();
+  }
+
+  @RequestMapping("/getUserData")
+  public WebResult getUserData(@RequestParam("offset") int offset,
+                                @RequestParam("pageSize") int pageSize) {
+    return userOP.getUserData(offset, pageSize);
+  }
+
+  @RequestMapping("/deleteUser")
+  public WebResult deleteUser(@RequestParam("account") String account) {
+    return userOP.deleteUser(account);
   }
 
 }
