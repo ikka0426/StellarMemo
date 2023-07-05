@@ -4,6 +4,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.example.stellarmemo.dao.UserDao;
+import com.example.stellarmemo.pojo.Admin;
 import com.example.stellarmemo.pojo.IDSet;
 import com.example.stellarmemo.pojo.User;
 import com.example.stellarmemo.pojo.WebResult;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -178,16 +181,86 @@ public class UserOP {
   @Value("${wx.secret}")
   private String secret;
 
-  public WebResult wxLogin(String code) {
+  public WebResult wxLogin(String code, HttpServletRequest request, HttpServletResponse response) {
     WebResult webResult = new WebResult();
-    String authUrl = "https://api.weixin.qq.com/sns/jscode2session?grant_type=authorization_code";
-    authUrl = authUrl + "&appid=" + appId + "&secret=" + secret + "&js_code=" + code;
-    String result = HttpUtil.get(authUrl);
-    System.out.println(code);
-    JSONObject jsonObject = JSONUtil.parseObj(result);
-    String openId = jsonObject.getStr("openid");
-    webResult.setData(openId);
+    String userId = null;
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (Cookie cookie: cookies) {
+        if (cookie.getName().equalsIgnoreCase("userCookie")) {
+          userId = cookie.getValue();
+        }
+      }
+      if (userId != null) {
+        webResult.error("已登录" + userId);
+        System.out.println(webResult.getMessage());
+        return webResult;
+      }
+    }
+    try {
+      String authUrl = "https://api.weixin.qq.com/sns/jscode2session?grant_type=authorization_code";
+      authUrl = authUrl + "&appid=" + appId + "&secret=" + secret + "&js_code=" + code;
+      String result = HttpUtil.get(authUrl);
+      System.out.println(code);
+      JSONObject jsonObject = JSONUtil.parseObj(result);
+      String openId = jsonObject.getStr("openid");
+
+      if (userDao.getUserNumberByAccount(openId) == 0) {
+        System.out.println("新帐号注册");
+        User user = new User(IDSet.getShortUuid(), openId, "password", "name");
+        userDao.createUser(user);
+      }
+
+      User user = userDao.getByPassword(openId, "password");
+      String userJson = JSONUtil.toJsonStr(user);
+      Cookie cookie = new Cookie("userCookie", user.getUser_id());
+      cookie.setMaxAge(7 * 24 * 60 * 60);
+      cookie.setPath("/");
+      response.addCookie(cookie);
+      redisTemplate.opsForValue().set("user/" + user.getUser_id(), userJson, 7, TimeUnit.DAYS);
+
+      webResult.setData(openId);
+      webResult.success("登陆成功");
+    } catch (Exception e) {
+      webResult.error("未知错误");
+      System.out.println(webResult.getMessage());
+    }
     return webResult;
   }
 
+  public WebResult getUserNum() {
+    WebResult webResult = new WebResult();
+    try {
+      webResult.setData(userDao.getUserNum());
+      webResult.success("success");
+      System.out.println(webResult.getMessage());
+    } catch (Exception e) {
+      webResult.error("未知错误");
+      System.out.println(webResult.getMessage());
+    }
+    return webResult;
+  }
+
+  public WebResult getUserData(int offset, int pageSize) {
+    WebResult webResult = new WebResult();
+    try {
+      List<User> userList = userDao.getUserData(offset, pageSize);
+      webResult.setData(userList);
+      webResult.success();
+    } catch (Exception e) {
+      webResult.error();
+    }
+    return webResult;
+  }
+
+  public WebResult deleteUser(String account) {
+    WebResult webResult = new WebResult();
+    try {
+      userDao.deleteUser(account);
+      webResult.success();
+    } catch (Exception e) {
+      webResult.error();
+    }
+    return webResult;
+  }
 }

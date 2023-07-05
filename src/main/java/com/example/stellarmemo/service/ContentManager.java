@@ -36,7 +36,6 @@ public class ContentManager {
                 while((len = inputStream.read(buffer)) > 0) {
                     outputStream.write(buffer, 0 ,len);
                 }
-
                 inputStream.close();
                 outputStream.close();
             } catch (IOException e) {
