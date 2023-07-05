@@ -25,6 +25,11 @@ public class NoteController {
     public WebResult deleteNote(@RequestBody HashMap<String, String> map){
         return noteOpImpl.deleteNote(map.get("note_id"));
     }
+    //审核笔记
+    @RequestMapping(value = "/examine")
+    public WebResult examineNote(@RequestBody HashMap<String, String> map) {
+        return noteOpImpl.deleteNote(map.get("note_id"));
+    }
 
     //返回全部笔记（不分页）
     @RequestMapping(value = "/searchAll")

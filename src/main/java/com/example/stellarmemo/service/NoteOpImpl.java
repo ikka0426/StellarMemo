@@ -67,6 +67,21 @@ public class NoteOpImpl implements NoteOp{
     }
 
     @Override
+    public WebResult examineNote(String note_id) {
+        WebResult webResult=new WebResult();
+        try{
+            noteDao.examineNote(note_id);
+            webResult.success("审核成功");
+            System.out.println("审核成功");
+
+        }catch (Exception e){
+            webResult.error("审核失败");
+            System.out.println(webResult.getMessage());
+        }
+        return webResult;
+    }
+
+    @Override
     public WebResult searchAllNote() {
         WebResult webResult = new WebResult();
         try {

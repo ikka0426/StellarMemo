@@ -16,9 +16,17 @@
     </update>
 
 
-    <delete id="deleteNote" >
-        delete from note where note_id=#{note_id}
-    </delete>
+    <update id="deleteNote" >
+        update note set
+        state="4"
+        where note_id=#{note_id}
+    </update>
+
+    <update id="examineNote" >
+        update note set
+            state="2"
+        where note_id=#{note_id}
+    </update>
 
     <select id="searchAllNote" resultType="Note">
         select * from note;
