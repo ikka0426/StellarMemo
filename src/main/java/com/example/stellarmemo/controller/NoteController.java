@@ -15,7 +15,7 @@ public class NoteController {
     NoteOpImpl noteOpImpl;
     @RequestMapping(value = "/create")
     public WebResult createNote(@RequestBody HashMap<String, String> map){
-        return noteOpImpl.createNote(map.get("user_id"),map.get("content"),map.get("note_id"),map.get("state"));
+        return noteOpImpl.createNote(map.get("user_id"),map.get("title"),map.get("content"));
     }
     @RequestMapping(value = "/modify")
     public WebResult modifyNote(@RequestBody HashMap<String, String> map){

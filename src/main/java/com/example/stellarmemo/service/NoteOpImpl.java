@@ -20,13 +20,14 @@ public class NoteOpImpl implements NoteOp{
     }
 
     @Override
-    public WebResult createNote(String user_id,String content,String note_id,String state) {
+    public WebResult createNote(String user_id,String title, String content) {
         WebResult webResult=new WebResult<>();
         try {
-            String modifiedContent = ContentManager.modifiedContent(content);
-            note_id= IDSet.getShortUuid();
+            String state = "1";
+            content = "<head><title>" + title + "</head></title>" + "<body>" + content + "</body>";
+            String note_id= IDSet.getShortUuid();
             String time = Timer.getInstanceTime();
-            noteDao.createNote(user_id,modifiedContent,note_id,state,time);
+            noteDao.createNote(user_id,content,note_id,state,time);
             webResult.success("创建笔记成功");
 
         }catch (Exception e){
