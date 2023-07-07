@@ -15,7 +15,7 @@ public class NoteController {
     NoteOpImpl noteOpImpl;
     @RequestMapping(value = "/create")
     public WebResult createNote(@RequestBody HashMap<String, String> map){
-        return noteOpImpl.createNote(map.get("user_id"),map.get("title"),map.get("content"));
+        return noteOpImpl.createNote(map.get("user_id"),map.get("title"),map.get("content"),map.get("publicValue"));
     }
     @RequestMapping(value = "/modify")
     public WebResult modifyNote(@RequestBody HashMap<String, String> map){
@@ -28,7 +28,7 @@ public class NoteController {
     //审核笔记
     @RequestMapping(value = "/examine")
     public WebResult examineNote(@RequestBody HashMap<String, String> map) {
-        return noteOpImpl.deleteNote(map.get("note_id"));
+        return noteOpImpl.examineNote(map.get("note_id"));
     }
 
     //返回全部笔记（不分页）

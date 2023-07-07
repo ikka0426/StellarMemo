@@ -20,10 +20,9 @@ public class NoteOpImpl implements NoteOp{
     }
 
     @Override
-    public WebResult createNote(String user_id,String title, String content) {
+    public WebResult createNote(String user_id,String title, String content, String state) {
         WebResult webResult=new WebResult<>();
         try {
-            String state = "1";
             content = "<head><title>" + title + "</head></title>" + "<body>" + content + "</body>";
             String note_id= IDSet.getShortUuid();
             String time = Timer.getInstanceTime();

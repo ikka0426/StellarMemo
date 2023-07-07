@@ -217,6 +217,7 @@ public class UserOP {
       cookie.setMaxAge(7 * 24 * 60 * 60);
       cookie.setPath("/");
       response.addCookie(cookie);
+      System.out.println(code);
       redisTemplate.opsForValue().set("user/" + user.getUser_id(), userJson, 7, TimeUnit.DAYS);
 
       webResult.setData(openId);

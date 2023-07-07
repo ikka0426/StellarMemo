@@ -1,19 +1,23 @@
 package com.example.stellarmemo.service;
-
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+
 import com.example.stellarmemo.dao.AdminDAO;
 import com.example.stellarmemo.dao.NoteDao;
 import com.example.stellarmemo.pojo.Admin;
 import com.example.stellarmemo.pojo.IDSet;
 import com.example.stellarmemo.pojo.User;
 import com.example.stellarmemo.pojo.WebResult;
+import com.example.stellarmemo.config.RedisConfig;
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+
+import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,9 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class AdminOP {
-
   @Autowired AdminDAO adminDAO;
-
   private final RedisTemplate<String, String> redisTemplate;
 
   private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
