@@ -27,4 +27,13 @@ public class NoteContoller {
     public WebResult deleteNote(@RequestBody HashMap<String, String> map){
         return noteOpImpl.deleteNote(map.get("noteid"));
     }
+    @RequestMapping(value ="/searchByKey")
+    public List<Note> searchByList(@RequestBody HashMap<String,String> map){
+       return noteOpImpl.searchByKey("%"+map.get("key")+"%",Integer.parseInt(map.get("startIndex")),Integer.parseInt(map.get("pageSize")));
+    }
+    
+    @RequestMapping(value = "/searchByTag")
+    public List<Note> searchByTag(@RequestBody HashMap<String,String> map){
+        return noteOpImpl.searchByTag(map.get("tag1"),map.get("tag2"),map.get("tag3"));
+    }
 }
