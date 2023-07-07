@@ -24,7 +24,7 @@
 
     <update id="examineNote" >
         update note set
-            state="2"
+            state=#{state}
         where note_id=#{note_id}
     </update>
 

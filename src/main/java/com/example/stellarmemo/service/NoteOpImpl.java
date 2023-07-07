@@ -66,10 +66,10 @@ public class NoteOpImpl implements NoteOp{
     }
 
     @Override
-    public WebResult examineNote(String note_id) {
+    public WebResult examineNote(String note_id, String state) {
         WebResult webResult=new WebResult();
         try{
-            noteDao.examineNote(note_id);
+            noteDao.examineNote(note_id, state);
             webResult.success("审核成功");
             System.out.println("审核成功");
 

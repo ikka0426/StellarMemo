@@ -23,7 +23,8 @@ public interface NoteDao {
 
     public void deleteNote(@Param("note_id") String note_id);//删除笔记
 
-    public void examineNote(@Param("note_id") String note_id);//删除笔记
+    public void examineNote(@Param("note_id") String note_id,
+                            @Param("state") String state);//删除笔记
 
     List<Note> searchAllNote();
 

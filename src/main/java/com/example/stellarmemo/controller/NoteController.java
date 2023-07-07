@@ -28,7 +28,7 @@ public class NoteController {
     //审核笔记
     @RequestMapping(value = "/examine")
     public WebResult examineNote(@RequestBody HashMap<String, String> map) {
-        return noteOpImpl.examineNote(map.get("note_id"));
+        return noteOpImpl.examineNote(map.get("note_id"), map.get("state"));
     }
 
     //返回全部笔记（不分页）
