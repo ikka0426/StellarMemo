@@ -68,25 +68,25 @@ public class NoteOpImpl implements NoteOp{
     public List<Note> searchByKey(String key, int startIndex, int pageSize) {
         try {
 
-            System.out.println(notedao.searchByKey(key, startIndex, pageSize));
+            System.out.println(noteDao.searchByKey(key, startIndex, pageSize));
         } catch (Exception e) {
             System.out.println("查询失败");
             System.out.println(e);
         }
-        return notedao.searchByKey(key, startIndex, pageSize);
+        return noteDao.searchByKey(key, startIndex, pageSize);
     }
 
     @Override
     public List<Note> searchByTag(String tag1, String tag2, String tag3) {
         try{if (tag2 == "" && tag3 == "" && tag1!="") {
             System.out.println("根据一个tag查询");
-            return notedao.searchByTag1(tag1);
+            return noteDao.searchByTag1(tag1);
         } else if (tag3 == "" && tag1!="" && tag2!="") {
             System.out.println("根据两个tag查询");
-            return notedao.searchByTag2(tag1, tag2);
+            return noteDao.searchByTag2(tag1, tag2);
         } else if (tag1!="" && tag2!="" && tag3!=""){
             System.out.println("根据三个tag查询");
-            return notedao.searchByTag3(tag1, tag2, tag3);
+            return noteDao.searchByTag3(tag1, tag2, tag3);
         }else return null;}
         catch (Exception e){
             System.out.println("查询错误");

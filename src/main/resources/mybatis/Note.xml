@@ -36,10 +36,6 @@
         select count(*) from note;
     </select>
 
-    <delete id="deleteNote" >
-        delete from note where noteid=#{noteid}
-    </delete>
-
     <select id="searchByKey" resultType="com.example.stellarmemo.pojo.Note">
         select * from note
         where content like #{key}
