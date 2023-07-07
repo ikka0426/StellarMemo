@@ -36,6 +36,36 @@
         select count(*) from note;
     </select>
 
+    <delete id="deleteNote" >
+        delete from note where noteid=#{noteid}
+    </delete>
+
+    <select id="searchByKey" resultType="com.example.stellarmemo.pojo.Note">
+        select * from note
+        where content like #{key}
+        limit #{startIndex},#{pageSize}
+
+    </select>
+
+   <select id="searchByTag1" resultType="com.example.stellarmemo.pojo.Note">
+       select note.* from note,tag,tag_note
+        where #{tag1}=tag.tag_name and tag.tag_id=tag_note.tag_id and tag_note.note_id=note.noteid
+    </select>
+
+    <select id="searchByTag2" resultType="com.example.stellarmemo.pojo.Note">
+
+        select distinct * from  (select note.* from note,tag,tag_note
+        where  #{tag1}=tag.tag_name and tag.tag_id=tag_note.tag_id and tag_note.note_id=note.noteid) t1 INNER JOIN (select note.* from note,tag,tag_note
+        where  #{tag2}=tag.tag_name and tag.tag_id=tag_note.tag_id and tag_note.note_id=note.noteid) t2 using(noteid)
+    </select>
+
+    <select id="searchByTag3" resultType="com.example.stellarmemo.pojo.Note">
+        select distinct * from  (select note.* from note,tag,tag_note
+                                 where  #{tag1}=tag.tag_name and tag.tag_id=tag_note.tag_id and tag_note.note_id=note.noteid) t1 INNER JOIN (select note.* from note,tag,tag_note
+                                                                                                                                             where  #{tag2}=tag.tag_name and tag.tag_id=tag_note.tag_id and tag_note.note_id=note.noteid) t2 inner join (select note.* from note,tag,tag_note
+                                                                                                                                                                                                                                                         where  #{tag3}=tag.tag_name and tag.tag_id=tag_note.tag_id and tag_note.note_id=note.noteid) t3 on t1.noteid=t2.noteid and t2.noteid=t3.noteid
+    </select>
+
     <select id="searchNoteByPage" resultType="Note">
         select * from note
         limit #{pageSize} offset #{offset};

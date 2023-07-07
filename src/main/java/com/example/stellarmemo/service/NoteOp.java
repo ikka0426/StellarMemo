@@ -12,4 +12,6 @@ public interface NoteOp {
     public WebResult countNote();
     public WebResult searchNoteByPage(int pageSize, int offset);
     public WebResult searchNoteByID(String note_id);
+    public List<Note> searchByKey(String key,int startIndex,int pageSize);
+    public List<Note> searchByTag(String tag1,String tag2,String tag3);
 }
