@@ -61,6 +61,15 @@ public class AdminController {
     return adminOP.isPermittedManage(request);
   }
 
+  @RequestMapping("/isPermittedExamine")
+  public WebResult isPermittedExamine(HttpServletRequest request) {
+    return adminOP.isPermittedExamine(request);
+  }
+
+  @RequestMapping("/isPermittedDelete")
+  public WebResult isPermittedDelete(HttpServletRequest request) {
+    return adminOP.isPermittedDelete(request);
+  }
   @RequestMapping("/getSetupTime")
   public WebResult getSetupTime() {
     return adminOP.getSetupTime();

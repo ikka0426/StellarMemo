@@ -213,6 +213,32 @@ public class AdminOP {
     return webResult;
   }
 
+  public WebResult isPermittedExamine(HttpServletRequest request) {
+    WebResult webResult = new WebResult();
+    String adminId = isLogin(request);
+    if (adminId == null) {
+      webResult.error("未登录");
+      return webResult;
+    }
+    String adminAccount = JSONUtil.parseObj(redisTemplate.opsForValue().get("admin/" + adminId)).getStr("account");
+    webResult.success();
+    webResult.setData("1".equals(adminDAO.isPermittedExamine(adminAccount)));
+    return webResult;
+  }
+
+  public WebResult isPermittedDelete(HttpServletRequest request) {
+    WebResult webResult = new WebResult();
+    String adminId = isLogin(request);
+    if (adminId == null) {
+      webResult.error("未登录");
+      return webResult;
+    }
+    String adminAccount = JSONUtil.parseObj(redisTemplate.opsForValue().get("admin/" + adminId)).getStr("account");
+    webResult.success();
+    webResult.setData("1".equals(adminDAO.isPermittedDelete(adminAccount)));
+    return webResult;
+  }
+
   private final long startTime = System.currentTimeMillis();
 
   public WebResult getSetupTime() {
